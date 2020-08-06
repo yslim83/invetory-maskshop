@@ -52,20 +52,27 @@ public class PolicyHandler{
             inventoryRepository.save(inventory);
         }
     }
-//0805 lys수정 start
+    //0805 lys수정 start + jjw수정
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverProductModified_Change(@Payload ProductModified productModified){
+    public void wheneverProductModified_Change(@Payload ProductModified productModified) {
+        Inventory inventory = new Inventory();
+        if (inventoryRepository.findByProductId(productModified.getProductId()).isPresent()) {
 
-        if(productModified.isMe()) {
             System.out.println("##### listener INVENTORY MODIFIED  : " + productModified.toJson());
 
-            Inventory inventory = new Inventory();
 
             inventory = inventoryRepository.findByProductId(productModified.getProductId()).get();
             inventory.setInvQty(productModified.getInvQty());
             inventoryRepository.save(inventory);
+        } else {
+            System.out.println("##### listener INVENTORY INSERT ======================");
+
+            inventory.setProductId(productModified.getProductId());
+            inventory.setInvQty(productModified.getInvQty());
+            inventoryRepository.save(inventory);
         }
     }
+}
 //0805 lys수정 end
 
 }
