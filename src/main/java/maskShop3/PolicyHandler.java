@@ -52,7 +52,7 @@ public class PolicyHandler{
             inventoryRepository.save(inventory);
         }
     }
-    //0805 lys수정 start + jjw수정
+    //0805 lys수정 start
     @StreamListener(KafkaProcessor.INPUT)
     public void wheneverProductModified_Change(@Payload ProductModified productModified) {
         Inventory inventory = new Inventory();
